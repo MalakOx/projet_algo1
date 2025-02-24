@@ -27,7 +27,8 @@ public class GameUI extends JFrame {
         new Color(255, 218, 185),  // Peach
         new Color(216, 191, 216)   // Thistle
     };
-    private static final Color VALIDATED_WORD_COLOR = new Color(144, 238, 144);  // Light green
+    private static final Color VALIDATED_WORD_COLOR = new Color(0, 0, 255);  // Blue for validated words
+    private static final Color BONUS_CELL_COLOR = Color.YELLOW;  // Yellow for bonus cells
     private static final Color CURRENT_POSITION_COLOR = new Color(255, 165, 0); // Orange for current position
     private Cell lastClickedCell;
     private int currentPathColorIndex = 0;
@@ -183,28 +184,18 @@ public class GameUI extends JFrame {
     }
 
     private JPanel createLegendPanel() {
-        JPanel legendPanel = new JPanel();
-        legendPanel.setLayout(new BoxLayout(legendPanel, BoxLayout.Y_AXIS));
-        legendPanel.setBorder(BorderFactory.createTitledBorder("Cell Types"));
-
-        // Add some padding
-        legendPanel.setBorder(BorderFactory.createCompoundBorder(
-            legendPanel.getBorder(),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-
-        // Create legend items
+        JPanel legendPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+        legendPanel.setBorder(BorderFactory.createTitledBorder("Legend"));
+        
         addLegendItem(legendPanel, Color.WHITE, "Normal Cell");
-        addLegendItem(legendPanel, Color.BLACK, "Blocked Cell");
-        addLegendItem(legendPanel, new Color(255, 200, 200), "Special Cell (+25 points)");
+        addLegendItem(legendPanel, BONUS_CELL_COLOR, "Bonus Cell");
         addLegendItem(legendPanel, Color.GREEN, "Start Cell");
-        addLegendItem(legendPanel, Color.RED, "Destination Cell");
-        addLegendItem(legendPanel, Color.YELLOW, "Selected Path");
-        addLegendItem(legendPanel, Color.LIGHT_GRAY, "Used Cell");
-        addLegendItem(legendPanel, LAST_CLICKED_COLOR, "Last Clicked Cell");
+        addLegendItem(legendPanel, Color.RED, "Finish Cell");
+        addLegendItem(legendPanel, LAST_CLICKED_COLOR, "Current Path");
+        addLegendItem(legendPanel, Color.BLACK, "Blocked Cell");
         addLegendItem(legendPanel, VALIDATED_WORD_COLOR, "Validated Word");
         addLegendItem(legendPanel, CURRENT_POSITION_COLOR, "Current Position");
-
+        
         return legendPanel;
     }
 
@@ -249,7 +240,7 @@ public class GameUI extends JFrame {
                     button.setBackground(Color.BLACK);
                     button.setEnabled(false);
                 } else if (cell.isSpecial()) {
-                    button.setBackground(Color.YELLOW);
+                    button.setBackground(BONUS_CELL_COLOR);
                 } else if (cell == grid.getStartCell()) {
                     button.setBackground(Color.GREEN);
                 } else if (cell == grid.getDestinationCell()) {
@@ -375,7 +366,7 @@ public class GameUI extends JFrame {
                     button.setBackground(Color.BLACK);
                     button.setForeground(Color.WHITE);
                 } else if (cell.isSpecial()) {
-                    button.setBackground(Color.YELLOW);
+                    button.setBackground(BONUS_CELL_COLOR);
                 } else {
                     button.setBackground(Color.WHITE);
                 }
@@ -385,26 +376,24 @@ public class GameUI extends JFrame {
                     button.setBackground(LAST_CLICKED_COLOR);
                 }
                 
-                // Color previous paths
-                for (int p = 0; p < game.getPreviousPaths().size(); p++) {
-                    List<Cell> path = game.getPreviousPaths().get(p);
+                // Color cells that are part of validated words in blue
+                boolean isPartOfValidatedWord = false;
+                for (List<Cell> path : game.getPreviousPaths()) {
                     if (path.contains(cell)) {
-                        int colorIndex = p % PATH_COLORS.length;
-                        button.setBackground(PATH_COLORS[colorIndex]);
+                        button.setBackground(VALIDATED_WORD_COLOR);
+                        isPartOfValidatedWord = true;
+                        break;
                     }
                 }
                 
-                // Override colors for special cells
+                // Override colors for special cells - these take precedence
                 if (cell == grid.getStartCell()) {
                     button.setBackground(Color.GREEN);
-                    // Make start cell pulse when it's a new round
-                    if (game.isNewRound()) {
-                        button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-                    } else {
-                        button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-                    }
                 } else if (cell == grid.getDestinationCell()) {
                     button.setBackground(Color.RED);
+                } else if (cell.isSpecial() && !isPartOfValidatedWord) {
+                    // Keep bonus cells yellow unless they're part of a validated word
+                    button.setBackground(BONUS_CELL_COLOR);
                 }
                 
                 // Highlight current position if not a new round
