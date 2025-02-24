@@ -30,24 +30,34 @@ public class Dictionary {
 
     private void initializeDefaultWords() {
         // Easy words (3-4 letters)
-        String[] easy = {"cat", "dog", "run", "jump", "play", "ball", "home", "tree",
-                        "book", "fish", "bird", "walk", "talk", "sing", "food"};
+        String[] easy = {    "cat", "dog", "run", "jump", "play", "ball", "home", "tree", "book", "fish", 
+    "bird", "walk", "talk", "sing", "food", "star", "moon", "blue", "frog", "lake", 
+    "milk", "baby", "rain", "snow", "hand", "cake", "boat", "coat", "door", "lamp", 
+    "rose", "wind", "leaf", "wave", "chair"};
         easyWords.addAll(Arrays.asList(easy));
 
         // Medium words (5-7 letters)
-        String[] medium = {"garden", "flower", "window", "pencil", "school", "friend",
-                          "purple", "orange", "yellow", "monkey", "rabbit", "turtle"};
+        String[] medium = { "garden", "flower", "window", "pencil", "school", "friend", "purple", "orange", 
+    "yellow", "monkey", "rabbit", "turtle", "summer", "winter", "autumn", "singer", 
+    "butter", "bridge", "pocket", "circle", "doctor", "safety", "guitar", "planet", 
+    "dragon", "hunter", "camera", "silver", "soccer", "forest", "painter", "candle", 
+    "rocket", "whisper", "market"};
         mediumWords.addAll(Arrays.asList(medium));
 
         // Hard words (8+ letters)
-        String[] hard = {"elephant", "butterfly", "chocolate", "adventure", "beautiful",
-                        "dangerous", "wonderful", "knowledge", "important", "different"};
+        String[] hard = { "elephant", "butterfly", "chocolate", "adventure", "beautiful", "dangerous", 
+    "wonderful", "knowledge", "important", "different", "creativity", "vegetable", 
+    "excellent", "mountains", "volcanoes", "chemistry", "invisible", "landscape", 
+    "treasure", "direction", "discovery", "telephone", "architect", "challenge", 
+    "medicinal", "astronaut", "champagne", "reflection", "harmonious", "waterfall", 
+    "mechanism", "happiness", "adrenaline", "historical", "remarkable"};
         hardWords.addAll(Arrays.asList(hard));
     }
 
     public void setDifficultyLevel(DifficultyLevel level) {
         this.currentLevel = level;
     }
+    
 
     public DifficultyLevel getCurrentLevel() {
         return currentLevel;

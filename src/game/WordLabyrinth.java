@@ -43,15 +43,15 @@ public class WordLabyrinth {
         switch (level) {
             case EASY:
                 movesLeft = rows * cols;
-                requiredWords = Math.max(5, rows * cols / 10);
+                requiredWords = Math.max(12, rows * cols / 6);
                 break;
             case MEDIUM:
-                movesLeft = (rows * cols) * 3/4;
+                movesLeft = (rows * cols) ;
                 requiredWords = Math.max(8, rows * cols / 8);
                 break;
             case HARD:
-                movesLeft = (rows * cols) / 2;
-                requiredWords = Math.max(12, rows * cols / 6);
+                movesLeft = (rows * cols) ;
+                requiredWords = Math.max(5, rows * cols / 10);
                 break;
             default:
                 movesLeft = rows * cols;

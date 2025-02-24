@@ -28,7 +28,7 @@ public class GameUI extends JFrame {
         new Color(216, 191, 216)   // Thistle
     };
     private static final Color VALIDATED_WORD_COLOR = new Color(0, 0, 255);  // Blue for validated words
-    private static final Color BONUS_CELL_COLOR = Color.YELLOW;  // Yellow for bonus cells
+    private static final Color BONUS_CELL_COLOR = new Color(255, 255, 0);  // Bright yellow for bonus cells
     private static final Color CURRENT_POSITION_COLOR = new Color(255, 165, 0); // Orange for current position
     private Cell lastClickedCell;
     private int currentPathColorIndex = 0;
@@ -188,7 +188,7 @@ public class GameUI extends JFrame {
         legendPanel.setBorder(BorderFactory.createTitledBorder("Legend"));
         
         addLegendItem(legendPanel, Color.WHITE, "Normal Cell");
-        addLegendItem(legendPanel, BONUS_CELL_COLOR, "Bonus Cell");
+        addLegendItem(legendPanel, BONUS_CELL_COLOR, "Bonus Cell (+25 points)");
         addLegendItem(legendPanel, Color.GREEN, "Start Cell");
         addLegendItem(legendPanel, Color.RED, "Finish Cell");
         addLegendItem(legendPanel, LAST_CLICKED_COLOR, "Current Path");
@@ -365,10 +365,14 @@ public class GameUI extends JFrame {
                 if (cell.isBlocked()) {
                     button.setBackground(Color.BLACK);
                     button.setForeground(Color.WHITE);
-                } else if (cell.isSpecial()) {
-                    button.setBackground(BONUS_CELL_COLOR);
                 } else {
                     button.setBackground(Color.WHITE);
+                    button.setForeground(Color.BLACK);
+                }
+
+                // Show bonus cells in yellow
+                if (cell.isSpecial() && cell != grid.getStartCell() && cell != grid.getDestinationCell()) {
+                    button.setBackground(BONUS_CELL_COLOR);
                 }
                 
                 // Color the current path
@@ -391,8 +395,8 @@ public class GameUI extends JFrame {
                     button.setBackground(Color.GREEN);
                 } else if (cell == grid.getDestinationCell()) {
                     button.setBackground(Color.RED);
-                } else if (cell.isSpecial() && !isPartOfValidatedWord) {
-                    // Keep bonus cells yellow unless they're part of a validated word
+                } else if (cell.isSpecial() && !isPartOfValidatedWord && !game.getCurrentPath().contains(cell)) {
+                    // Keep bonus cells yellow unless they're part of a validated word or current path
                     button.setBackground(BONUS_CELL_COLOR);
                 }
                 
@@ -400,6 +404,10 @@ public class GameUI extends JFrame {
                 if (!game.isNewRound() && cell == game.getCurrentPosition()) {
                     button.setBackground(CURRENT_POSITION_COLOR);
                 }
+
+                // Make buttons more visible
+                button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+                button.setFont(button.getFont().deriveFont(Font.BOLD));
             }
         }
     }
