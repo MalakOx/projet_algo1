@@ -27,6 +27,7 @@ public class Grid {
         initializeEmptyGrid();
         placeBlockedCells();
         placeStartAndDestinationCells();
+        placeBonusCells();
         buildGraph();
     }
 
@@ -80,6 +81,28 @@ public class Grid {
                 break;
             }
         } while (true);
+    }
+
+    private void placeBonusCells() {
+        // Add bonus cells (approximately 20% of non-blocked cells)
+        int totalCells = rows * cols;
+        int blockedCount = totalCells / 10; // 10% are blocked
+        int availableCells = totalCells - blockedCount;
+        int numBonus = availableCells * 20 / 100; // 20% of available cells
+        int placed = 0;
+
+        while (placed < numBonus) {
+            int row = random.nextInt(rows);
+            int col = random.nextInt(cols);
+            Cell cell = cells[row][col];
+
+            // Only place bonus on non-blocked, non-special cells that aren't start or destination
+            if (!cell.isBlocked() && !cell.isSpecial() && 
+                cell != startCell && cell != destinationCell) {
+                cell.setSpecial(true); // This marks it as a bonus cell
+                placed++;
+            }
+        }
     }
 
     private void buildGraph() {
@@ -294,6 +317,7 @@ public class Grid {
             int r = startRow + i * dRow;
             int c = startCol + i * dCol;
             cells[r][c].setLetter(word.charAt(i));
+            // Don't override special status - keep bonus cells marked as special
         }
     }
 
@@ -301,9 +325,10 @@ public class Grid {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                Cell cell = cells[i][j];
-                if (cell.getLetter() == ' ' && !cell.isBlocked() && cell != destinationCell) {
-                    cell.setLetter(alphabet.charAt(random.nextInt(alphabet.length())));
+                if (cells[i][j].getLetter() == ' ' && !cells[i][j].isBlocked() && cells[i][j] != destinationCell) {
+                    char randomLetter = alphabet.charAt(random.nextInt(alphabet.length()));
+                    cells[i][j].setLetter(randomLetter);
+                    // Don't override special status - keep bonus cells marked as special
                 }
             }
         }
